@@ -1,35 +1,47 @@
-# Air Quality Monitoring System
+# MQ135 GAS SENSOR
 
-This project utilizes an ESP8266 microcontroller along with an MQ135 gas sensor to monitor air quality. The data is then sent to ThingSpeak for visualization and analysis.
+Updated and improved Arduino library for the MQ135 gas/air quality sensor.
 
-## Getting Started
+## Datasheet
 
-To get started with this project, you'll need the following components:
+Can be found [here](https://www.olimex.com/Products/Components/Sensors/SNS-MQ135/resources/SNS-MQ135.pdf).
 
-- ESP8266 microcontroller
-- MQ135 gas sensor
-- WiFi connection
-- ThingSpeak account
+## Application
 
-### Installation
+This type of sensor is used in air quality control equipments for buildings/offices and is suitable for detecting of NH3, NOx, alcohol, Benzene, smoke, CO2, etc.
 
-1. Connect the MQ135 sensor to the A0 pin of the ESP8266.
-2. Update the `apiKey`, `ssid`, and `pass` variables in the code with your own ThingSpeak API key and WiFi credentials.
-3. Upload the provided code to your ESP8266 microcontroller.
+## Features
 
-### Usage
+This library has:
+ - Corrections for temperature and humidity
+ - Measurements:
+    - getResistance
+    - getCorrectedResistance
+    - getPPM
+    - getCorrectedPPM
+    - getRZero
+    - getCorrectedRZero
 
-Once the code is uploaded and the connections are set up:
+## Calibration
 
-1. Power on the ESP8266.
-2. The device will connect to your WiFi network.
-3. It will start monitoring air quality and send the data to ThingSpeak at regular intervals.
+To get an accurate ppm reading it is important to calibrate the sensor.
 
-## Contributing
+To do so put your sensor outside where there is enough fresh air (ideally at 20°C & 33% humidity according to the datasheet) and leave it powered on for 12-24 hours to burn it in and stabilize.
 
-Contributions are welcome! If you'd like to contribute to this project, feel free to fork this repository and submit a pull request.
+Then you can read out the calibrated resistance value `RZERO` like this (needs to be done when still outside!):
 
-## License
+```cpp
+float rzero = gasSensor.getRZero();
+```
 
-This project is licensed under the [MIT License](LICENSE).
+The best way to do this is to average multiple readings to fight ADC noise.
+To finish the calibration process you now only need to pass your `RZERO` value to the constructor like this:
 
+```cpp
+MQ135 gasSensor(PIN_MQ135, RZERO);
+```
+
+
+## More Info
+
+https://hackaday.io/project/3475-sniffing-trinket/log/12363-mq135-arduino-library
